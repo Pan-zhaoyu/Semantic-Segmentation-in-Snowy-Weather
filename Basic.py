@@ -100,7 +100,7 @@ def writeImage(image):
     im = Image.fromarray(np.uint8(rgb))
     return im
 
-def drawfigure(N, H):
+def drawfigure(N, H, savepath):
     plt.style.use("ggplot")
     plt.figure()
     plt.plot(np.arange(0, N), H.history["loss"], label="train_loss")
@@ -111,4 +111,4 @@ def drawfigure(N, H):
     plt.xlabel("Epoch")
     plt.ylabel("Loss/Accuracy")
     plt.legend(loc="center")
-    plt.savefig("/home/robotics/PycharmProjects/RESULTS/plot_0716")
+    plt.savefig(savepath)
