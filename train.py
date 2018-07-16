@@ -33,8 +33,6 @@ model = fcn_32s()
 #model = Segnet_model.SegNet()
 #model = Segnet_test_model.SegNet()
 #model = Unet_model.Unet()
-
-model.compile(loss="binary_crossentropy", optimizer='sgd', metrics=['accuracy'])
 BS = 1
 EPOCHS = 1
 H = model.fit_generator(
