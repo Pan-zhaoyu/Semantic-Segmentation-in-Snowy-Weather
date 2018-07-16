@@ -23,4 +23,5 @@ def fcn_32s():
     for layer in model.layers[:15]:
         layer.trainable = False
 #    model.summary()
+    model.compile(loss="binary_crossentropy", optimizer='sgd', metrics=['accuracy'])  
     return model
