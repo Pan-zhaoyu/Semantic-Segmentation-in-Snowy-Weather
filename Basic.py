@@ -3,6 +3,7 @@ from PIL import Image
 import numpy as np
 import os
 import matplotlib
+import matplotlib.pyplot as plt
 matplotlib.use("Agg")
 
 nb_classes = 20
@@ -26,7 +27,7 @@ def bilinear_upsample_weights(factor, number_of_classes):
 def load_image(path):
     img_org = Image.open(path)
     w, h = img_org.size
-    #img = img_org.resize(((320//32)*32, (224//32)*32))
+    #img = img_org.resize(((480//32)*32, (352//32)*32))
     img = img_org.resize(((w//32)*32, (h//32)*32))
     img = np.array(img, dtype=np.float32)
     x = np.expand_dims(img, axis=0) #np.expand_dims(a, axis)
@@ -36,7 +37,7 @@ def load_image(path):
 def load_label(path):
     img_org = Image.open(path)
     w, h = img_org.size
-    #img = img_org.resize(((320//32)*32, (224//32)*32))
+    #img = img_org.resize(((480//32)*32, (352//32)*32))
     img = img_org.resize(((w//32)*32, (h//32)*32))
     img = np.array(img, dtype=np.uint8)
     img[img==255] = 0
@@ -61,41 +62,53 @@ def generate_arrays_from_file(path, image_dir, label_dir):
 
 def writeImage(image):
     """ label data to colored image """
-    Car = [0, 0, 142]  # 5
-    Sky = [70, 130, 180]  # 6
-    Roadway = [128, 63, 127]  # 7
-    Sidewalk = [243, 35, 232]  # 8
-    SnowMass = [81, 0, 81]  # 9
-    Vegetation = [106, 142, 34]  # 10
-    Person = [217, 22, 56]  # 11
-    Animal = [0, 128, 0]    # 2
-    Building = [70, 70, 70]  # 13
-    TrafficSign = [220, 220, 0]  # 14
-    TrafficLight = [192, 192, 128]  # 12
-    TelegraphPole = [157, 149, 160]  # 16
-    Truck = [64, 128, 255]  # 15
-    Bus = [128, 64, 255]    # 1
-    Field = [64, 128, 128]  # 3
-    SnowBlowing = [189, 153, 153]  # 4
-    Manhole = [63, 64, 64]  # 17
-    Unlabelled = [0, 0, 0]  # 18
-    unlabelled1 = [0, 0, 0]
-    unlabelled2 = [0, 0, 0]
+    unlabelled = [0,0,0]        #1
+    ego_vehicle = [0,0,0]       #2
+    static_object = [190,153,153]#3
+    car = [0,0,142]             #4
+    sky = [70,130,180]          #5
+    roadway = [128,64,128]      #6
+    sidewalk = [244,35,232]     #7
+    snow_mass = [81,0,81]       #8
+    vegetation = [107,142,35]   #9
+    person = [220,20,60]        #10
+    animal = [255,0,0]          #11
+    building = [70,70,70]       #12
+    traffic_sign = [220,220,0]  #13
+    traffic_light = [250,170,30]#14
+    telegraph_pole = [153,153,153]#15
+    truck = [0,0,70]            #16
+    bus = [0,60,100]            #17
+    field = [152,251,152]       #18
+    snow_blowing = [255,255,255]#19
+    manhole = [81,0,81]         #20
 
     r = image.copy()
     g = image.copy()
     b = image.copy()
-    label_colours = np.array([Bus, Animal, Field, SnowBlowing, Car,
-                              Sky, Roadway, Sidewalk, SnowMass, Vegetation,
-                              Person, TrafficLight, Building, TrafficSign, Truck,
-                              TelegraphPole, Manhole, Unlabelled, unlabelled1, unlabelled2])
-    for l in range(0, nb_classes):
-        r[image == l] = label_colours[l, 0]
-        g[image == l] = label_colours[l, 1]
-        b[image == l] = label_colours[l, 2]
+    label_colours = np.array([unlabelled, ego_vehicle, static_object,car,sky,roadway,sidewalk,snow_mass,vegetation,
+                              person,animal,building,traffic_sign,traffic_light,telegraph_pole,
+                              truck,bus,field,snow_blowing,manhole])
+    for l in range(1, nb_classes+1):
+        r[image == l] = label_colours[l-1, 0]
+        g[image == l] = label_colours[l-1, 1]
+        b[image == l] = label_colours[l-1, 2]
     rgb = np.zeros((image.shape[0], image.shape[1], 3))
     rgb[:, :, 0] = r / 1.0
     rgb[:, :, 1] = g / 1.0
     rgb[:, :, 2] = b / 1.0
     im = Image.fromarray(np.uint8(rgb))
     return im
+
+def drawfigure(N, H):
+    plt.style.use("ggplot")
+    plt.figure()
+    plt.plot(np.arange(0, N), H.history["loss"], label="train_loss")
+    plt.plot(np.arange(0, N), H.history["val_loss"], label="val_loss")
+    plt.plot(np.arange(0, N), H.history["acc"], label="train_acc", color='blue')
+    plt.plot(np.arange(0, N), H.history["val_acc"], label="val_acc", color='red')
+    plt.title("Training Loss and Accuracy on FCN")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss/Accuracy")
+    plt.legend(loc="center")
+    plt.savefig("/home/robotics/PycharmProjects/RESULTS/plot_0716")
