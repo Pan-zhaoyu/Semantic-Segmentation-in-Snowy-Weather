@@ -36,4 +36,4 @@ with open("/home/robotics/PycharmProjects/RESULTS/fcn.yaml", "w") as yaml_file:
 model.save_weights("/home/robotics/PycharmProjects/RESULTS/fcn.h5")
 print("Saved model to disk")
 
-drawfigure(EPOCHS, H)
+drawfigure(EPOCHS, H, savepath = "/home/robotics/PycharmProjects/RESULTS/plot_0716")
