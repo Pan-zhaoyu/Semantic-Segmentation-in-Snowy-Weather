@@ -56,8 +56,9 @@ def generate_arrays_from_file(path, image_dir, label_dir):
             path_label = os.path.join(label_dir, filename+".png")
             x = load_image(path_image)
             y = load_label(path_label)
+            #for the segnet, the input should be changed
+            y = np.reshape(y,(1, 352*480, 20))
             yield (x, y)
-
         f.close()
 
 def writeImage(image):
