@@ -1,3 +1,4 @@
+#https://github.com/0bserver07/Keras-SegNet-Basic/blob/master/Segnet-Evaluation-Visualization.ipynbz
 from __future__ import absolute_import
 from __future__ import print_function
 import os
